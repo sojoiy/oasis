@@ -1,114 +1,191 @@
 @extends('layout.default')
 
 @section('content')
-<!-- begin:: Content Head -->
-<div class="kt-subheader   kt-grid__item" id="kt_subheader">
-	<div class="kt-subheader__main">
-		<h3 class="kt-subheader__title">Livraisons</h3>
-		<span class="kt-subheader__separator kt-subheader__separator--v"></span>
-		<a href="/livraisons/createlivraison" class="btn btn-label-success btn-bold btn-sm btn-icon-h kt-margin-l-10">
-			<i class="fa fa-plus"></i> Nouvelle livraison
-		</a>
-		
-		<form action="/search" method="post">
-		{{ csrf_field() }}
-		<div class="kt-input-icon kt-input-icon--right kt-subheader__search">
-			<input type="text" name="keywords" class="form-control" placeholder="Rechercher..." id="generalSearch">
-			<span class="kt-input-icon__icon kt-input-icon__icon--right">
-				<span><i class="fa fa-search"></i></span>
-			</span>
-		</div>
-		</form>
-	</div>
-	<div class="kt-subheader__toolbar">
-		{{ (sizeof($livraisons) < 2) ? sizeof($livraisons).' Livraison' : sizeof($livraisons).' Livraisons' }}
-	</div>
-</div>
 
-<!-- end:: Content Head -->
+    <div class="card card-custom">
+		<!--
+        <div class="card-header flex-wrap border-0 pt-6 pb-0">
+            <div class="card-toolbar">
+                <div class="dropdown dropdown-inline mr-2">
+                    <button type="button" class="btn btn-light-primary font-weight-bolder dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="svg-icon svg-icon-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <rect x="0" y="0" width="24" height="24"/>
+                                <path d="M3,16 L5,16 C5.55228475,16 6,15.5522847 6,15 C6,14.4477153 5.55228475,14 5,14 L3,14 L3,12 L5,12 C5.55228475,12 6,11.5522847 6,11 C6,10.4477153 5.55228475,10 5,10 L3,10 L3,8 L5,8 C5.55228475,8 6,7.55228475 6,7 C6,6.44771525 5.55228475,6 5,6 L3,6 L3,4 C3,3.44771525 3.44771525,3 4,3 L10,3 C10.5522847,3 11,3.44771525 11,4 L11,19 C11,19.5522847 10.5522847,20 10,20 L4,20 C3.44771525,20 3,19.5522847 3,19 L3,16 Z" fill="#000000" opacity="0.3"/>
+                                <path d="M16,3 L19,3 C20.1045695,3 21,3.8954305 21,5 L21,15.2485298 C21,15.7329761 20.8241635,16.200956 20.5051534,16.565539 L17.8762883,19.5699562 C17.6944473,19.7777745 17.378566,19.7988332 17.1707477,19.6169922 C17.1540423,19.602375 17.1383289,19.5866616 17.1237117,19.5699562 L14.4948466,16.565539 C14.1758365,16.200956 14,15.7329761 14,15.2485298 L14,5 C14,3.8954305 14.8954305,3 16,3 Z" fill="#000000"/>
+                            </g>
+                        </svg>
+                    </span>Export
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
+                        <ul class="navi flex-column navi-hover py-2">
+                            <li class="navi-header font-weight-bolder text-uppercase font-size-sm text-primary pb-2">Choisissez une option:</li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 
-<!-- begin:: Content -->
-<div class="card card-custom">
-	@foreach ($livraisons as $livraison)
-	<div class="modal fade" id="kt_modal_{{ $livraison->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLongTitle">Supprimer le dossier {{ $livraison->numero }}</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					</button>
+        <div class="card-body">
+
+            <!--begin::Search Form-->
+			<form id="sortPage" method="post" action="{{ $refresh }}">
+				<input type="hidden" name="num_page" value="{{ $num_page }}" />
+				<input type="hidden" id="criteria_sort" name="sort" value="{{ $sort }}" />
+				<input type="hidden" id="criteria_sens" name="sens" value="{{ $sens }}" />
+				<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+				{{ csrf_field() }}
+			
+	            <div class="mt-2 mb-5 mt-lg-5 mb-lg-10">
+	                <div class="row align-items-center">
+	                    <div class="col-lg-8 col-xl-8">
+	                        <div class="row align-items-center">
+	                            <div class="col-md-7 my-2 my-md-0">
+	                                <div class="input-icon">
+	                                    <input type="text" class="form-control" name="keywords" value="{{ $keywords }}" placeholder="Rechercher..." id="kt_datatable_search_query"/>
+	                                    <span><i class="flaticon2-search-1 text-muted"></i></span>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+	                    <div class="col-lg-3 col-xl-4 mt-5 mt-lg-0">
+	                        <button type="sumbit" class="btn btn-light-primary px-6 font-weight-bold">
+	                            Rechercher
+							</button>
+	                    </div>
+	                </div>
+	            </div>
+			</form>
+            <!--end::Search Form-->
+
+			<div class="d-flex justify-content-between align-items-center flex-wrap">
+				<div class="d-flex flex-wrap py-2 mr-3">
+					
+					<form method="post" action="{{ $refresh }}">
+						<input type="hidden" name="num_page" value="{{ $num_page - 1 }}" />
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<button type="submit" {{ ($num_page == 1) ? 'disabled' : '' }} class="btn btn-icon btn-sm btn-light mr-2 my-1">
+						<i class="ki ki-bold-arrow-back icon-xs"></i></button>
+					</form>
+					
+					@if($num_page > 1)
+						<a href="#" class="btn btn-icon btn-sm border-0 btn-light mr-2 my-1">{{ $num_page - 1 }}</a>
+					@endif
+						
+					<a href="#" class="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1"> {{ $num_page }}</a>
+					
+					@if($num_page < $nb_pages)
+						<a href="#" class="btn btn-icon btn-sm border-0 btn-light mr-2 my-1">{{ $num_page + 1 }}</a>
+					@endif
+					
+					<form method="post" action="{{ $refresh }}">
+						<input type="hidden" name="num_page" value="{{ $num_page + 1 }}" />
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<button type="submit" {{ ($num_page == $nb_pages) ? 'disabled' : '' }} class="btn btn-icon btn-sm btn-light mr-2 my-1">
+						<i class="ki ki-bold-arrow-next icon-xs"></i></i></button>
+					</form>
 				</div>
-				<div class="modal-body">
-					<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-					<button type="button" data-dismiss="modal" onclick="supprimerLivraison({{ $livraison->id }})" class="btn btn-danger">Supprimer</button>
+				<div class="d-flex align-items-center py-3">
+					<form id="changerPage" method="post" action="{{ $refresh }}">
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<select name="num_page" class="form-control form-control-sm font-weight-bold mr-4 border-0 bg-light" style="width: 175px;" onchange="$('#changerPage').submit();">
+							<option value="1">-- Page --</option>
+							@for($i = 1; $i <= $nb_pages ; $i++)
+								<option value="{{ $i }}">Page {{ $i }}</option>
+							@endfor
+						</select>
+						<span class="text-muted">Affichage 20 sur {{ $nb_items }}</span>
+					</form>
 				</div>
 			</div>
-		</div>
-	</div>
-	@endforeach
+						
+			<table class="table table-striped table-bordered table-hover table-checkable">
+				<tr>
+					<th>Numéro</th>
+					<th>Libellé</th>
+					<th>Dates</th>
+					<th>Initié par</th>
+					<th>Date création</th>
+					<th>Statut</th>
+					<th></th>
+				</tr>
+				
+				@foreach ($elements as $element)
+					<tr id="ligne_entite_{{ $element->id }}">
+						<td style="width:60px;"><a href="/element/showDo/{{ $element->id }}" class="kt-widget4__username">{{ $element->numero }}</a></td>
+						<td style="width:50px;">{{ $element->libelle }}</td>
+						<td style="width:50px;">{{ date('d/m/Y', strtotime($element->date_element)) }}</td>
+						<td style="width:90px;">{{ $element->initiateur() }}</td>
+						<td style="width:90px;">{{ date('d/m/Y à H:i', strtotime($element->created_at)) }}</td>
+						<td style="width:90px;">{{ $element->statut() }}</td>
+						<td style="width:80px;" class="text-center">
+								<a href="/elements/show/{{ $element->id }}" class="btn btn-sm btn-label-brand btn-bold">Voir</a>
+						</td>
+					</tr>
+				@endforeach
+			</table>
+			
+			<div class="d-flex justify-content-between align-items-center flex-wrap">
+				<div class="d-flex flex-wrap py-2 mr-3">
+					
+					<form method="post" action="{{ $refresh }}">
+						<input type="hidden" name="num_page" value="{{ $num_page - 1 }}" />
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<button type="submit" {{ ($num_page == 1) ? 'disabled' : '' }} class="btn btn-icon btn-sm btn-light mr-2 my-1">
+						<i class="ki ki-bold-arrow-back icon-xs"></i></button>
+					</form>
+					
+					@if($num_page > 1)
+						<a href="#" class="btn btn-icon btn-sm border-0 btn-light mr-2 my-1">{{ $num_page - 1 }}</a>
+					@endif
+						
+					<a href="#" class="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1"> {{ $num_page }}</a>
+					
+					@if($num_page < $nb_pages)
+						<a href="#" class="btn btn-icon btn-sm border-0 btn-light mr-2 my-1">{{ $num_page + 1 }}</a>
+					@endif
+					
+					<form method="post" action="{{ $refresh }}">
+						<input type="hidden" name="num_page" value="{{ $num_page + 1 }}" />
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<button type="submit" {{ ($num_page == $nb_pages) ? 'disabled' : '' }} class="btn btn-icon btn-sm btn-light mr-2 my-1">
+						<i class="ki ki-bold-arrow-next icon-xs"></i></i></button>
+					</form>
+				</div>
+				<div class="d-flex align-items-center py-3">
+					<form id="changerPage" method="post" action="{{ $refresh }}">
+						<input type="hidden" name="keywords" value="{{ (isset($keywords)) ? $keywords : '' }}" >
+						<input type="hidden" name="annee" value="{{ (isset($annee)) ? $annee : '' }}" >
+						{{ csrf_field() }}
+						<select name="num_page" class="form-control form-control-sm font-weight-bold mr-4 border-0 bg-light" style="width: 175px;" onchange="$('#changerPage').submit();">
+							<option value="1">-- Page --</option>
+							@for($i = 1; $i <= $nb_pages ; $i++)
+								<option value="{{ $i }}">Page {{ $i }}</option>
+							@endfor
+						</select>
+						<span class="text-muted">Affichage 20 sur {{ $nb_items }}</span>
+					</form>
+				</div>
+			</div>
+
+        </div>
+
+    </div>
 	
-	<!--Begin::Section-->
-	<div class="row">
-		<div class="col-xl-12">
-
-			<!--begin:: Widgets/New Users-->
-			<div class="card card-custom">
-				<div class="card-header">
-					<div class="card-title">
-						<h3>
-							{{ $user->name }}
-						</h3>
-					</div>
-					<div class="kt-portlet__head-toolbar">
-					</div>
-				</div>
-				<div class="card-body">
-					<div class="tab-content">
-						<div class="tab-pane active" id="kt_widget4_tab1_content">
-							<div class="kt-widget4">
-								<table class="table table-striped- table-bordered table-hover table-checkable" id="kt_table_1">
-									<thead>
-										<tr>
-											<th>Numéro</th>
-											<th>Dates</th>
-											<th>Initié par</th>
-											<th>Date création</th>
-											<th>Statut</th>
-											<th></th>
-										</tr>
-									</thead>
-									<tbody>
-										@foreach ($livraisons as $livraison)
-											<tr>
-												<td style="width:60px;"><a href="/livraison/showDo/{{ $livraison->id }}" class="kt-widget4__username">{{ $livraison->numero }}</a></td>
-												<td style="width:50px;">{{ date('d/m/Y', strtotime($livraison->date_livraison)) }}</td>
-												<td style="width:90px;">{{ $livraison->initiateur() }}</td>
-												<td style="width:90px;">{{ date('d/m/Y à H:i', strtotime($livraison->created_at)) }}</td>
-												<td style="width:90px;">{{ $livraison->statut() }}</td>
-												<td style="width:80px;" class="text-center">
-														<a href="/livraisons/show/{{ $livraison->id }}" class="btn btn-sm btn-label-brand btn-bold">Voir</a>
-												</td>
-											</tr>
-										@endforeach
-									</tfoot>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!--end:: Widgets/New Users-->
-		</div>
-	</div>
-	<!--End::Dashboard 1-->
-</div>
-<!--End::Section-->
 @endsection
 
 @section('specifijs')
-	<script src="{{ asset('assets/js/livraison.js') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/js/chantier.js') }}" type="text/javascript"></script>
 @endsection
