@@ -1,0 +1,1 @@
+<select name="type_piece" class="form-control">@foreach($typesPiece as $piece)<option value="{{ $piece->id }}">{{ $piece->libelle }}</option>@endforeach</select>

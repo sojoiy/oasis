@@ -1,0 +1,106 @@
+body {
+	font-family: Montserrat;
+	background-color:#ffffff;;
+}
+
+.kt-content {
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:0px;
+	height:100%;
+}
+
+.kt-wizard-v4 .kt-wizard-v4__nav .kt-wizard-v4__nav-items .kt-wizard-v4__nav-item .kt-wizard-v4__nav-body .kt-wizard-v4__nav-number {
+	background: #f2f2f2;
+	color:#fff;
+}
+
+.kt-wizard-v4 .kt-wizard-v4__nav .kt-wizard-v4__nav-items .kt-wizard-v4__nav-item[data-ktwizard-state="current"] .kt-wizard-v4__nav-body .kt-wizard-v4__nav-number {
+	background: #f4ad24;
+}
+
+.kt-wizard-v4 .kt-wizard-v4__nav .kt-wizard-v4__nav-items .kt-wizard-v4__nav-item[data-ktwizard-state="current"] .kt-wizard-v4__nav-body .kt-wizard-v4__nav-label .kt-wizard-v4__nav-label-title {
+	color: #333333;
+}
+
+@media (min-width: 1025px) {
+	.kt-header--fixed.kt-subheader--fixed.kt-subheader--enabled .kt-wrapper {
+	    padding-top: 0px;
+	}
+}
+
+.kt-portlet {
+	border:solid 1px #303947;
+	border-radius:0px;
+}
+
+.kt-header--fixed .kt-wrapper {
+	padding-top:0px;
+}
+
+h2 {
+	padding:20px 0 20px 0;
+	color:#f2f2f2;
+	font-size:72px;
+}
+
+.label {
+	text-align:center;
+	font-size:32px;
+	margin:10px 0 0 20px;
+	color:#fff;
+	font-weight:bold;
+}
+
+a:link,
+a:hover {
+	color:#f4ad24;
+}
+
+.form-control {
+	padding-top: 0;
+	    padding-bottom: 0;
+	    height: 40px;
+	    background-color: #ffffff;
+	    font-size: 13px;
+	    color: #c5c5c5;
+	    border-width: 1px;
+	    border-color: #dddddd;
+	    border-radius: 0px;
+}
+
+.btn-brand, .btn-primary {
+	background: #f4ad24;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn-brand:hover, .btn-primary:hover {
+	background: #f4ad24;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+	
+.kt-wizard-v4 .kt-wizard-v4__nav .kt-wizard-v4__nav-items .kt-wizard-v4__nav-item {
+	background-color: rgb(34, 35, 42);
+	color:#fff;
+}
+
+@media (max-width: 1400px) { 
+	.image-right {
+		display:none;
+	}
+}
+
+.image-right {
+	height: 100vh;
+	background:url('/assets/media/suscribe/suscribe.jpeg') #333 no-repeat;
+}
+
+#kt_footer {
+	padding-top: 30px;
+    padding-bottom: 29px;
+    background-color: #232a34;
+    border-top-width: 0px;
+    border-color: #4b4c4d;
+}
