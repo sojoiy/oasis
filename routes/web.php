@@ -251,7 +251,7 @@ Route::post('/rdv/refuserrdv', 'RdvController@refuserrdv')->name('chantier-refus
 Route::post('/rdv/supprimer', 'RdvController@supprimer')->name('chantier-supprimer');
 Route::post('/rdv/listeValideur', 'RdvController@listeValideur')->name('chantier-listeValideur');
 
-Route::get('/livraisons/lister', 'LivraisonsController@lister')->name('livraisons-lister');
+Route::match(['get', 'post'], '/livraisons/lister', 'LivraisonsController@lister')->name('livraisons-lister');
 Route::get('/livraisons/createlivraison', 'LivraisonsController@createlivraison')->name('livraisons-createlivraison');
 Route::post('/livraisons/save', 'LivraisonsController@save')->name('livraisons-save');
 Route::get('/livraisons/show/{id}', 'LivraisonsController@show')->name('livraisons-show');

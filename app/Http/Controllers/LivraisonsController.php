@@ -66,22 +66,73 @@ class LivraisonsController extends Controller
         return view('users');
     }
 	
-	
-	/** GESTION DES LISTES DE CHANTIERS **/
-	public function lister($message = "EMPTY")
+	// AFFICHE LA LISTE DES LIVRAISONS ENVOYE PAR LE DO OU LE PRESTA
+	// livraisons/lister
+    public function lister($message = "EMPTY", Request $request)
     {
 		$user = \Auth::user();
 		
-		$myItem = Societe::find($user->societeID);
-		$societeID = $user->societeID;
+		$societe = Societe::find($user->societeID);
 		
-		if($user->do)
-			$livraisons = Livraison::where('do', $user->societeID)->get();
+        $page_title = 'Livraison';
+        $page_description = "Mes Livraisons";
+		
+		$keywords = "";
+		$num_page = (isset($request->num_page)) ? $request->input("num_page") : 1;
+		$sort = (isset($request->sort)) ? $request->input("sort") : "libelle";
+		$sens = (isset($request->sens)) ? $request->input("sens") : "asc";
+		$refresh = "/livraisons/lister";
+		
+		if(isset($request->keywords) && $request->keywords != "")
+		{
+			$keywords = $request->keywords;
+			
+			if($user->do)
+			{
+				$elements = Livraison::where('do', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->where('libelle', 'like', '%'.$request->keywords.'%')->orWhere('numero', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+				$nb_items = Livraison::where('do', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->where('libelle', 'like', '%'.$request->keywords.'%')->orWhere('numero', 'like', '%'.$request->keywords.'%')->count();
+			}	
+			else
+			{
+				$elements = Livraison::where('societe', $user->societeID)->where('type_chantier', 0)->where('date_livraison', '>=', date("Y-m-d"))->where('libelle', 'like', '%'.$request->keywords.'%')->orWhere('numero', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+				$nb_items = Livraison::where('societe', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->where('type_chantier', 0)->where('libelle', 'like', '%'.$request->keywords.'%')->orWhere('numero', 'like', '%'.$request->keywords.'%')->count();
+			}
+			
+			$nb_pages = max(1, intval($nb_items/20));
+		}
 		else
-			$livraisons = Livraison::where('societe', $user->societeID)->get();
+		{
+			if($user->do)
+			{
+				$elements = Livraison::where('do', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+				$nb_items = Livraison::where('do', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->where('libelle', 'like', '%'.$request->keywords.'%')->count();
+			}	
+			else
+			{
+				$elements = Livraison::where('societe', $user->societeID)->where('type_chantier', 0)->where('date_livraison', '>=', date("Y-m-d"))->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+				$nb_items = Livraison::where('societe', $user->societeID)->where('date_livraison', '>=', date("Y-m-d"))->where('type_chantier', 0)->where('libelle', 'like', '%'.$request->keywords.'%')->count();
+			}
+			
+			$nb_pages = max(1, intval($nb_items/20));
+		}	
 		
+		// BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/chantier/create/", "label" => "Nouveau chantier", "style" => "info", "icon" => "<i class='fa fa-plus'></i>");
 		
-        return view('livraisons/lister', ['user' => $user, 'livraisons' => $livraisons, 'message' => $message, 'open' => 'livraisons']);
+        return view('livraisons/lister', compact('page_title', 
+		'page_description', 
+		'refresh',
+		'actions', 
+		'user', 
+		'keywords', 
+		'nb_pages', 
+		'societe', 
+		'num_page', 
+		'sort', 
+		'sens', 
+		'elements',
+		'nb_items')); 
     }
 	
 	public function createlivraison(Request $request, $message = "EMPTY")
