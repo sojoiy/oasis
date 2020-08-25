@@ -23,7 +23,21 @@ var KTCalendarBasic = function() {
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-
+				eventClick: function(info) {
+			    	var eventObj = info.event;
+		 			$.ajax({
+		    	        type:'POST',
+		    	        url:'/chantier/setcreneau',
+		    	        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+		    			data: {
+		    		        "equipierID": 2,
+		    				"creneau": eventObj.id
+		    		        },
+		    	         success:function(data){
+		    	            $("#zoneNotification").html(data);
+		    	         }
+		    	      });
+			    },
                 height: 800,
                 contentHeight: 780,
                 aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
@@ -129,7 +143,7 @@ var KTCalendarBasic = function() {
                     },
                     {
                         title: 'Birthday Party',
-                        start: TOMORROW + 'T07:00:00',
+                        start: '2020-08-28T07:00:00',
                         className: "fc-event-primary",
                         description: 'Lorem ipsum dolor sit amet, scing'
                     },

@@ -1,5 +1,7 @@
 @extends('layout.default')
 
+<link href="{{ asset('/assets/plugins/custom/fullcalendar/fullcalendar.bundle.css?v=7.0.5') }}" rel="stylesheet" type="text/css" />
+		
 @section('content')
 <!-- begin:: Content Head -->
 <div class="kt-subheader   kt-grid__item" id="kt_subheader">
@@ -57,7 +59,7 @@
 					</div>
 				</div>
 				<div class="card-body">
-					<div id="calendar"></div>
+					<div id="kt_calendar"></div>
 				</div>
 			</div>
 
@@ -71,48 +73,6 @@
 
 @section('specifijs')
 	<script src="{{ asset('assets/js/chantier.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/js/demo1/pages/crud/forms/widgets/typeahead.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/vendors/custom/fullcalendar/main.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/vendors/custom/fullcalendar/daygrid/main.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/vendors/custom/fullcalendar/locales/fr.js') }}" type="text/javascript"></script>
-	
-	<script type="text/javascript">
-		document.addEventListener('DOMContentLoaded', function() {
-		        var calendarEl = document.getElementById('calendar');
-
-		        var calendar = new FullCalendar.Calendar(calendarEl, {
-					locale: 'fr',
-					plugins: [ 'dayGrid' ],
-					eventClick: function(info) {
-				    	var eventObj = info.event;
-			 			$.ajax({
-			    	        type:'POST',
-			    	        url:'/chantier/setcreneau',
-			    	        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-			    			data: {
-			    		        "equipierID": {{$equipier->id}},
-			    				"creneau": eventObj.id
-			    		        },
-			    	         success:function(data){
-			    	            $("#zoneNotification").html(data);
-			    	         }
-			    	      });
-				    },
-				    defaultDate: '{{ date("Y-m-d") }}',
-					events: [
-						@foreach($creneaux as $creneau)
-						{
-					        title: {{ $creneau->nombre_places }}+'pl.',
-					        id: {{ $creneau->id }},
-					        start: '{{ $creneau->date_debut }}',
-					        end: '{{ date("Y-m-d H:i:s", strtotime($creneau->date_debut."+".$creneau->duree."minutes")) }}',
-					    },
-						@endforeach
-						 
-				    ]
-				  });
-
-		        calendar.render();
-		      });
-	</script>
+	<script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js?v=7.0.5') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/js/pages/features/calendar/basic.js?v=7.0.5') }}" type="text/javascript"></script>
 @endsection
