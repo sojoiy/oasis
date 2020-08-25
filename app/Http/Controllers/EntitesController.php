@@ -127,19 +127,65 @@ class EntitesController extends Controller
 		'navs'));
     }
 	
-    /**
-     * Affiche la liste des véhicules d'un prestataire.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+	// AFFICHE LA LISTE DES VEHICULES D'UN PRESTATAIRE
+	// vehicules
     public function vehicules()
     {
 		$user = \Auth::user();
 		
-		$entites = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->get();
-		$deleted_entites = Entite::where('categorie', 'vehicule')->where('statut', 'deleted')->get();
+		
+		$societe = Societe::find($user->societeID);
+		
+        $page_title = 'Mes ressources';
+        $page_description = "vehicules";
+		
+		$keywords = "";
+		$num_page = (isset($request->num_page)) ? $request->input("num_page") : 1;
+		$sort = (isset($request->sort)) ? $request->input("sort") : "name";
+		$sens = (isset($request->sens)) ? $request->input("sens") : "asc";
+		$refresh = "/vehicules";
+		
+		if(isset($request->keywords) && $request->keywords != "")
+		{
+			$keywords = $request->keywords;
 			
-        return view('vehicule/vehicules', ['user' => $user, 'entites' => $entites, 'deleted_entites' => $deleted_entites, 'open' => 'entite']);
+			$elements = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+			$nb_items = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->count();
+			$nb_pages = max(1, intval($nb_items/20));
+		}
+		else
+		{
+			$elements = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+			$nb_items = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->count();
+			$nb_pages = max(1, intval($nb_items/20));
+		}	
+	
+        // BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/add-vehicule", "label" => "Ajouter un vehicule", "style" => "info", "icon" => "<i class='fa fa-plus'></i>");
+		
+		// BOUTONS DE POPUP
+		$popups = array();
+		
+		// BOUTONS DE NAVIGATION
+		$navs = array();
+		
+        return view('vehicule/vehicules', compact('page_title', 
+		'page_description', 
+		'refresh', 
+		'user', 
+		'keywords', 
+		'nb_pages', 
+		'societe', 
+		'num_page', 
+		'sort', 
+		'sens', 
+		'elements',
+		'nb_items', 
+		'actions', 
+		'popups', 
+		'navs'));
     }
 	
     /**
