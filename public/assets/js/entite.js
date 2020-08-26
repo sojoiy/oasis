@@ -45,3 +45,17 @@ function verifierIntervenant(nom, prenom, dateNaissance)
 	         }
 	      });
 }
+function verifierVehicule(immatriculation)
+{
+	$.ajax({
+	         type:'POST',
+	         url:'/vehicule/rechercher',
+	         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			data: {
+		        "immatriculation": immatriculation	
+		        },
+	         success:function(data){
+	            $("#resultatRecherche").html(data);
+	         }
+	      });
+}

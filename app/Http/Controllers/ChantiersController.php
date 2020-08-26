@@ -2543,7 +2543,7 @@ class ChantiersController extends Controller
 		
         return view('chantier/attribuer', ['user' => $user, 'equipe' => $equipe, 'creneaux' => $creneaux, 'chantier' => $myItem, 'equipier' => $equipier]);
     }
-	
+	//enregistre un creneau dans la table equipier et return la date du creneau
     public function setcreneau(Request $request)
     {
 		$user = \Auth::user();
@@ -2554,7 +2554,7 @@ class ChantiersController extends Controller
 		
 		$creneau = Creneau::find($request->input("creneau"));
 			
-		return view('chantier/notifierRdv', ['user' => $user, 'equipier' => $equipier, 'creneau' => $creneau]);
+		return $creneau->date_debut;
     }
 	
 	/*** ADMIN ***/

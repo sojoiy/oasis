@@ -334,6 +334,7 @@ Route::post('/vehicule/save', 'EntitesController@savevehicule')->name('save-vehi
 Route::get('/vehicule/show/{id}', 'EntitesController@vehiculeshow')->name('fiche-vehicule');
 Route::post('/vehicule/change', 'EntitesController@vehiculechange')->name('change-vehicule');
 Route::post('/vehicule/addpiece', 'EntitesController@addpiece')->name('piece-intervenant');
+Route::post('/vehicule/rechercher', 'EntitesController@rechercherVehicule')->name('vehicule-rechercher');
 
 Route::get('/entite/autres', 'EntitesController@autres')->name('entite-autres');
 Route::get('/entite/createtype', 'EntitesController@createtype')->name('entite-createtype');

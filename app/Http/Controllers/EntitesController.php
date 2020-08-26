@@ -150,7 +150,8 @@ class EntitesController extends Controller
 		{
 			$keywords = $request->keywords;
 			
-			$elements = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+			$elements = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)
+			->offset(($num_page-1)*20)->limit(20)->get();
 			$nb_items = Entite::where('categorie', 'vehicule')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->count();
 			$nb_pages = max(1, intval($nb_items/20));
 		}
@@ -170,6 +171,8 @@ class EntitesController extends Controller
 		
 		// BOUTONS DE NAVIGATION
 		$navs = array();
+
+	
 		
         return view('vehicule/vehicules', compact('page_title', 
 		'page_description', 
@@ -197,9 +200,64 @@ class EntitesController extends Controller
     {
 		$user = \Auth::user();
 		
-		$entites = Entite::where('categorie', 'autre')->where('societe', $user->societeID)->where('statut', 'actif')->get();
+		
+		$societe = Societe::find($user->societeID);
+		
+        $page_title = 'Mes ressources';
+        $page_description = "autres";
+		
+		$keywords = "";
+		$num_page = (isset($request->num_page)) ? $request->input("num_page") : 1;
+		$sort = (isset($request->sort)) ? $request->input("sort") : "name";
+		$sens = (isset($request->sens)) ? $request->input("sens") : "asc";
+		$refresh = "/autres";
+		
+		if(isset($request->keywords) && $request->keywords != "")
+		{
+			$keywords = $request->keywords;
 			
-        return view('entite/autres', ['user' => $user, 'entites' => $entites, 'open' => 'entite']);
+			$elements = Entite::where('categorie', 'autre')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')
+			->orderBy($sort, $sens)
+			->offset(($num_page-1)*20)->limit(20)->get();
+			$nb_items = Entite::where('categorie', 'autre')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')
+			->count();
+			$nb_pages = max(1, intval($nb_items/20));
+		}
+		else
+		{
+			$elements = Entite::where('categorie', 'autre')->where('statut', 'actif')->where('societe', $user->societeID)->orderBy($sort, $sens)->offset(($num_page-1)*20)
+			->limit(20)->get();
+			$nb_items = Entite::where('categorie', 'autre')->where('statut', 'actif')->where('societe', $user->societeID)->count();
+			$nb_pages = max(1, intval($nb_items/20));
+		}	
+	
+        // BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/add-autres", "label" => "Ajouter un autre", "style" => "info", "icon" => "<i class='fa fa-plus'></i>");
+		
+		// BOUTONS DE POPUP
+		$popups = array();
+		
+		// BOUTONS DE NAVIGATION
+		$navs = array();
+
+	
+		
+        return view('entite/autres', compact('page_title', 
+		'page_description', 
+		'refresh', 
+		'user', 
+		'keywords', 
+		'nb_pages', 
+		'societe', 
+		'num_page', 
+		'sort', 
+		'sens', 
+		'elements',
+		'nb_items', 
+		'actions', 
+		'popups', 
+		'navs'));
     }
 	
 	public function supprimerdocument(Request $request)
@@ -459,8 +517,10 @@ class EntitesController extends Controller
     {
 		$user = \Auth::user();
 		$lesPays = Pays::all();
+		$navs= array();
+		$navs[] = array("url" => "/vehicules", "label" => "Retour", "icon" => "<i class='fa fa-arrow-left'></i>");
 		
-        return view('vehicule/frm-add', ['user' => $user, 'open' => 'entite', 'lesPays' => $lesPays]);
+        return view('vehicule/frm-add', ['user' => $user, 'open' => 'entite', 'lesPays' => $lesPays,'navs'=>$navs]);
     }
 	
     /**
@@ -654,7 +714,7 @@ class EntitesController extends Controller
     }
 	
     /**
-     * Enregistre un intervenant et affiche la page de liste des intervenants
+     * Enregistre un vehicule et affiche la page de liste des vehicules
      *
      * @return \Illuminate\Http\Response
      */
@@ -1148,6 +1208,29 @@ class EntitesController extends Controller
 		$html = '';
 		
 		$jumeau = Entite::where("nom", $request->nom)->where("prenom", $request->prenom)->where("date_naissance", date("Y-m-d", strtotime($request->dateNaissance)))->first();
+	
+		if($jumeau)
+		{
+			$html .= '<label class="col-form-label col-lg-2 col-sm-12">Correspondance trouvée</label>
+			<div class="col-6">
+				<span class="kt-switch">
+					<label>
+						<input type="checkbox" name="jumeau" value="'.$jumeau->id.'">
+					</label>
+				</span>
+			</div>';
+		}
+		
+		
+		return $html;
+	}
+	public function rechercherVehicule(Request $request)
+    {
+		$user = \Auth::user();
+		
+		$html = '';
+		
+		$jumeau = Entite::where("immatriculation", $request->immatriculation)->first();
 	
 		if($jumeau)
 		{
