@@ -293,6 +293,8 @@ Route::get('/chantier/rdv', 'ChantiersController@rdv')->name('chantier-rdv');
 Route::get('/chantier/attribuer/{id}', 'ChantiersController@attribuer')->name('chantier-attribuer');
 Route::post('/chantier/attribuer', 'ChantiersController@attribuerpost')->name('chantier-attribuer');
 Route::post('/chantier/setcreneau', 'ChantiersController@setcreneau')->name('chantier-setcreneau');
+Route::post('/chantier/rafraichircalendar', 'ChantiersController@rafraichircalendar')->name('chantier-rafraichircalendar');
+Route::post('/chantier/annulerrdv', 'ChantiersController@annulerrdv')->name('chantier-annulerrdv');
 Route::post('/chantier/proroger', 'ChantiersController@proroger')->name('chantier-proroger');
 Route::post('/chantier/cloturer', 'ChantiersController@cloturer')->name('chantier-cloturer');
 Route::post('/chantier/upload', 'ChantiersController@upload')->name('chantier-upload');

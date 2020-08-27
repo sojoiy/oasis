@@ -2547,16 +2547,37 @@ class ChantiersController extends Controller
     public function setcreneau(Request $request)
     {
 		$user = \Auth::user();
-		
-		$equipier = Equipier::find($request->input("equipierID"));
-		$equipier->creneau = $request->input("creneau");
-		$equipier->save();
-		
+
 		$creneau = Creneau::find($request->input("creneau"));
-			
-		return $creneau->date_debut;
-    }
-	
+
+		$equipier = Equipier::find($request->input("equipierID"));
+		if(Equipier::where('rdv',$creneau->id)->count() < $creneau->nombre_places){
+			$equipier->creneau = $request->input("creneau");
+			$equipier->rdv = $creneau->id;
+			$equipier->save();
+		
+			return $creneau->date_debut;
+		}
+		
+		return 'IL n\'y a plus de place disponible pour ce créneau !';
+		
+	}
+	public function rafraichircalendar(Request $request)
+	{
+		$equipier = Equipier::find($request->equipier);
+		$creneaux = Creneau::where('societe', $equipier->do)->get();
+		
+		return view('chantier/rafraichircalendar', ['creneaux' => $creneaux,'equipier' => $equipier]);
+	}
+	public function annulerrdv(Request $request)
+	{
+		$equipier = Equipier::find($request->equipier);
+		$creneaux = Creneau::where('societe', $equipier->do)->get();
+		 $equipier->rdv=Null;
+		 $equipier->save();
+		
+		return view('chantier/rafraichircalendar', ['creneaux' => $creneaux,'equipier' => $equipier]);
+	}
 	/*** ADMIN ***/
 	
     public function administrerchantier()
