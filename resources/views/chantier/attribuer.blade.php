@@ -36,15 +36,17 @@
 		<div class="col-md-12">
 
 			<!--begin:: Widgets/New Users-->
-			<div class="kt-portlet" id="kt_portlet">
-				<div class="card-header">
-					<div class="card-title">
-						<span class="kt-portlet__head-icon">
-							<i class="flaticon-map-location"></i>
-						</span>
-						<h3>
+				<div class="card card-custom">
+					<!--begin::Header-->
+					<div class="card-header border-0">
+						<h3 class="card-title font-weight-bolder text-dark">
 							Choix d'un créneau pour {{ $equipier->name() }}
 						</h3>
+						<div class="card-toolbar">
+							
+								OK
+							
+						</div>
 					</div>
 					<div class="kt-portlet__head-toolbar">
 						<form method="post" action="/chantier/attribuer" id="changerEquipier">
@@ -61,7 +63,6 @@
 				<div class="card-body">
 					<div id="kt_calendar"></div>
 				</div>
-			</div>
 
 			<!--end:: Widgets/New Users-->
 		</div>
