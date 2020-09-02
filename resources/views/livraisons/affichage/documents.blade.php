@@ -1,7 +1,6 @@
 @extends('layout.default')
 
 @section('content')
-@include('livraisons.head', ['active' => 'Documents'])
 
 <!-- end:: Content Head -->
 

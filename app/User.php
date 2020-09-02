@@ -300,10 +300,10 @@ class User extends Authenticatable
 			if($rights["rejuger_pieces"])
 			{
 				$items[] = array([
-		            'title' => 'Pièces invalidées',
+		            'title' => 'Annuaire intervenants',
 		            'icon' => 'media/svg/icons/Layout/Layout-4-blocks.svg',
 		            'bullet' => 'line',
-		            'page' => '/chantier/piecesrefusees'
+		            'page' => '/annuaire/lister'
 					        ]);
 			}
 			

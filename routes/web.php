@@ -169,7 +169,6 @@ Route::post('/chantier/getlignevisiteur', 'ChantiersController@getlignevisiteur'
 Route::post('/chantier/getlignedate', 'ChantiersController@getlignedate')->name('chantier-getlignedate');
 
 Route::match(['get', 'post'], '/chantier/pieces', 'ChantiersController@pieces')->name('chantier-pieces');
-Route::get('/chantier/piecesrefusees', 'ChantiersController@piecesrefusees')->name('chantier-piecesrefusees');
 Route::get('/chantier/piece/{id}', 'ChantiersController@piece')->name('chantier-piece');
 Route::get('/chantier/received', 'ChantiersController@received')->name('chantier-lister');
 Route::get('/chantier/create', 'ChantiersController@create')->name('chantier-creer');
@@ -207,7 +206,9 @@ Route::post('/chantier/saveattributs', 'ChantiersController@saveattributs')->nam
 Route::post('/chantier/refreshresponsables', 'ChantiersController@refreshresponsables')->name('chantier-saveattributs');
 Route::get('/autorisation/chantiers', 'SocietesController@chantiers')->name('autorisation-chantiers');
 
-	
+Route::get('/annuaire/show/{id}', 'AnnuaireController@show')->name('annuaire-show');
+Route::match(['get', 'post'], '/annuaire/lister', 'AnnuaireController@lister')->name('annuaire-lister');
+
 Route::post('/chantier/savememo', 'ChantiersController@savememo')->name('chantier-savememo');
 Route::get('/chantier/mandater/{id}', 'ChantiersController@mandater')->name('chantier-mandater');
 Route::get('/chantier/validation/{id}', 'ChantiersController@validation')->name('chantier-validation');

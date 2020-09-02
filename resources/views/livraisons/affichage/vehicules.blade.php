@@ -1,7 +1,6 @@
 @extends('layout.default')
 
 @section('content')
-@include('livraisons.head', ['active' => 'Véhicules'])
 
 <div class="modal fade" id="kt_modal_newvehicule" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">

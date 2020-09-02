@@ -1,7 +1,6 @@
 @extends('layout.default')
 
 @section('content')
-@include('livraisons.head', ['active' => 'Intervenants'])
 
 <!-- end:: Content Head -->
 
@@ -208,7 +207,7 @@
 													</td>
 												@else
 													<td nowrap class="text-center" style="width:140px;padding-top:15px;">
-														@include('livraison.tabintervenant', ['entite' => $entite])
+														@include('livraisons.tabintervenant', ['entite' => $entite])
 													</td>
 												@endif
 											</tr>
