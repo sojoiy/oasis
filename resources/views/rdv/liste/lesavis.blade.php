@@ -99,7 +99,7 @@
 					<td>{{ $element->validation() }}</td>
 					<td class="text-center">
 						<a href="/rdv/show/{{ $element->id }}" class="btn btn-sm btn-label-brand btn-bold">Voir</a>&nbsp;
-						@if($element->validation)
+						@if($element->validation == NULL)
 							<a href="#" data-toggle="modal" class="btn btn-sm btn-danger btn-bold" data-target="#kt_modal_{{ $element->id }}" tabindex="-1" id="p_{{ $element->id }}_anchor">Supprimer</a>
 						@endif	
 					</td>

@@ -334,7 +334,7 @@ class RdvController extends Controller
         $myItem->nom_visiteur  = $request->nom_visiteur[0];
         $myItem->prenom_visiteur = $request->prenom_visiteur[0];
         $myItem->societe_visiteur = $request->societe_visiteur[0];
-        $myItem->date_rdv = $request->date_rdv[0];
+        $myItem->date_rdv = date("Y-m-d H:i", strtotime($request->date_rdv[0]));
         $myItem->creneaux = json_encode($request->date_rdv);
         
 		$accompagnement = array();

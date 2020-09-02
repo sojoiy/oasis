@@ -2569,6 +2569,7 @@ class ChantiersController extends Controller
 		
 		return view('chantier/rafraichircalendar', ['creneaux' => $creneaux,'equipier' => $equipier]);
 	}
+	//annule un rdv et lance le rafraichissement du calendar
 	public function annulerrdv(Request $request)
 	{
 		$equipier = Equipier::find($request->equipier);

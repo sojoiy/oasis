@@ -37,7 +37,7 @@ var KTBootstrapDatetimepicker = function () {
             autoclose: true,
             pickerPosition: 'bottom-left',
             todayBtn: true,
-            format: 'yyyy/mm/dd hh:ii'
+            format: 'dd/mm/yyyy hh:ii'
         });
         $('#kt_datetimepicker_3_modal').datetimepicker({
             todayHighlight: true,

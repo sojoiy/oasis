@@ -71,9 +71,9 @@
 							
 							<div id="dates">
 								<div class="form-group row">
-									<label class="col-lg-2 col-form-label">Date RDV *</label>
+									<label class="col-lg-2 col-7form-label">Date RDV *</label>
 									<div class="col-lg-2 date">
-										<input class="form-control" required name="date_rdv[]" type="text" required value="" id="kt_datetimepicker_3">
+										<input class="form-control" required name="date_rdv[]" type="text" required placeholder="jj / mm / aaaa --:--" id="kt_datetimepicker_3">
 									</div>
 								
 									<div class="col-lg-3">
@@ -126,7 +126,7 @@
 								<div class="col-lg-4">
 									<div class="kt-input-icon">
 									<select required class="form-control" name="valideur2">
-										<option value="0">-- Validation niveau 1 uniquement --</option>
+										<option value="0">-- Validation niveau 2 uniquement --</option>
 										@foreach($users as $valideur)
 											<option value="{{ $valideur->id }}">{{ $valideur->name }}</option>
 										@endforeach
@@ -150,10 +150,12 @@
 					</form>
 				</div>
 			</div>
+			
 @endsection
 
 @section('specifijs')
 	<script src="{{ asset('assets/js/rdv.js') }}" type="text/javascript"></script>
-	<script src="{{ asset('assets/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js?v=7.0.5') }}" type="text/javascript"></script>
+	<script src="{{ asset('assets/js/pages/crud/forms/widgets/bootstrap-datetimepicker.js?v=7.0.5') }}" type="text/javascript" charset="UTF-8"></script>
+	
 	
 @endsection

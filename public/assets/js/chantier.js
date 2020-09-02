@@ -51,7 +51,7 @@ function annulerrdv(equipier)
 			data: {
 		        "equipier": equipier
 		        },
-	         success:function(data){
+	         success:function(equipier){
 	            rafraichircalendar(equipier);
 	         }
 	      });

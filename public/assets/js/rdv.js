@@ -8,7 +8,7 @@ function refreshValideur2(valideur)
 		         url:'/rdv/listeValideur',
 		         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
 				data: {
-			        "valideur": valideur
+					"valideur": valideur
 			        },
 		         success:function(data){
 					$("#valideur2").html(data); 
@@ -21,6 +21,7 @@ function refreshValideur2(valideur)
 	}
 	
 }
+
 
 function supprimerRDV(rdvID)
 {
