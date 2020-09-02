@@ -20,6 +20,12 @@ class Livreur extends Model
 		return $entite->name;
 	}
 	
+	public function employeur()
+	{
+		$societe = Societe::find($this->societe);
+		return $societe->raisonSociale;
+	}
+	
 	public function nature()
 	{
 		$entite = Entite::find($this->intervenant);

@@ -28,6 +28,34 @@ function refreshValideurs(piece_ID)
 	         }
 	      });
 }
+function rafraichircalendar(equipier)
+{
+	$.ajax({
+	         type:'POST',
+	         url:'/chantier/rafraichircalendar',
+	         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			data: {
+		        "equipier": equipier
+		        },
+	         success:function(data){
+	            $("#calendar").html(data);
+	         }
+	      });
+}
+function annulerrdv(equipier)
+{
+	$.ajax({
+	         type:'POST',
+	         url:'/chantier/annulerrdv',
+	         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			data: {
+		        "equipier": equipier
+		        },
+	         success:function(data){
+	            rafraichircalendar(equipier);
+	         }
+	      });
+}
 
 function refreshResponsables(type_chantier)
 {

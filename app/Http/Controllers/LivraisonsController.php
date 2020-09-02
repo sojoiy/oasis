@@ -182,11 +182,15 @@ class LivraisonsController extends Controller
 		}
     }
 	
+	// AFFICHE LE FORMULAIRE D'UNE LIVRAISON
+	// livraisons/lister
 	public function show($id)
     {
 		$user = \Auth::user();
 		
 		$livraison = Livraison::find($id);
+		$page_title = 'Livraison '.$livraison->numero;
+		$page_description = $livraison->numero;
 		
 		// SI LE DOSSIER N'A PAS DE PRESTATAIRE PRINCIPAL ON LE REDIRIGE
 		if(!$livraison->societe)
@@ -194,11 +198,189 @@ class LivraisonsController extends Controller
 			return $this->choixpresta($id);
 		}
 			
+		$evenements = array();
 		$transporteurs = Transporteur::where('livraison', $id)->get();
 		$titulaire = Societe::find($livraison->societe);
 		$prestataires = Societe::where('transport', 1)->get();
-			
-        return view('livraisons/show', ['user' => $user, 'livraison' => $livraison, 'titulaire' => $titulaire, 'transporteurs' => $transporteurs, 'open' => 'livraisons']);
+		
+		// BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/livraisons/show/".$livraison->id, "label" => "Informations", "style" => "info", "icon" => "<i class='fa fa-info'></i>");
+		$actions[] = array("url" => "/livraisons/documents/".$livraison->id, "label" => "Documents", "style" => "info", "icon" => "<i class='fa fa-folder-open'></i>");
+		$actions[] = array("url" => "/livraisons/intervenants/".$livraison->id, "label" => "Intervenants", "style" => "info", "icon" => "<i class='fa fa-user-friends'></i>");
+		$actions[] = array("url" => "/livraisons/vehicules/".$livraison->id, "label" => "Véhicules", "style" => "info", "icon" => "<i class='fa fa-truck'></i>");
+		
+		$popups = array();
+		
+		$navs = array();
+		
+        return view('livraisons/affichage/show', compact('page_title', 
+		'page_description', 
+		'user', 
+		'actions', 
+		'popups',
+		'navs',
+		'livraison', 
+		'evenements', 
+		'titulaire', 
+		'prestataires',
+		'transporteurs'));
+    }
+	
+	// AFFICHAGE DES DOCUMENTS DE LIVRAISON DU DOSSIER
+	// livraisons/documents
+    public function documents($id)
+    {
+		$user = \Auth::user();
+		$societe = Societe::find($user->societeID);
+		$societeID = $user->societeID;
+		
+		$livraison = Livraison::find($id);
+		$page_title = 'Livraison '.$livraison->numero .' [Documents]';
+		$page_description = $livraison->numero;
+		$transporteurs = Transporteur::where('livraison', $livraison->id)->get();
+		
+		// BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/livraisons/show/".$livraison->id, "label" => "Informations", "style" => "info", "icon" => "<i class='fa fa-info'></i>");
+		$actions[] = array("url" => "/livraisons/documents/".$livraison->id, "label" => "Documents", "style" => "info", "icon" => "<i class='fa fa-folder-open'></i>");
+		$actions[] = array("url" => "/livraisons/intervenants/".$livraison->id, "label" => "Intervenants", "style" => "info", "icon" => "<i class='fa fa-user-friends'></i>");
+		$actions[] = array("url" => "/livraisons/vehicules/".$livraison->id, "label" => "Véhicules", "style" => "info", "icon" => "<i class='fa fa-truck'></i>");
+		
+		$popups = array();
+		
+		$navs = array();
+		
+        return view('livraisons/affichage/documents', compact('page_title', 
+		'page_description', 
+		'user', 
+		'actions', 
+		'popups',
+		'navs',
+		'livraison',
+		'transporteurs'));
+    }
+	
+	// AFFICHAGE DES DOCUMENTS DE LIVRAISON DU DOSSIER
+	// livraisons/intervenants
+    public function intervenants($id)
+    {
+		$user = \Auth::user();
+		$societe = Societe::find($user->societeID);
+		$societeID = $user->societeID;
+		
+		$categorie = "livreur";
+		
+		$livraison = Livraison::find($id);
+		$page_title = 'Livraison '.$livraison->numero .' [Livreurs]';
+		$page_description = $livraison->numero;
+		$transporteurs = Transporteur::where('livraison', $livraison->id)->get();
+		
+		if($livraison->do == $user->societeID)
+		{
+			$titulaire = Societe::find($livraison->societe);
+			$equipe = Livreur::where('livraison', $id)->whereIn('categorie', ['livreur'])->get();
+			$remplacants = array();
+		}
+		else
+		{
+			$titulaire = Societe::find($user->societeID);
+			$remplacants = DB::table('entites')
+				->where('societe', $user->societeID)
+				->whereIn('categorie', ['intervenant', 'interim', 'etranger'])
+				->whereNotIn('id', function($query) use ($livraison)
+				    {
+				        $query->select(DB::raw('intervenant'))
+				              ->from('livreurs')
+				              ->whereRaw('livreurs.livraison = '.$livraison);
+				    })
+	            ->get('entites.*');
+
+			$equipe = Livreur::where('livraison', $id)->where('societe', $user->societeID)->whereIn('categorie', ['livreur'])->get();
+		}
+		
+		// BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/livraisons/show/".$livraison->id, "label" => "Informations", "style" => "info", "icon" => "<i class='fa fa-info'></i>");
+		$actions[] = array("url" => "/livraisons/documents/".$livraison->id, "label" => "Documents", "style" => "info", "icon" => "<i class='fa fa-folder-open'></i>");
+		$actions[] = array("url" => "/livraisons/intervenants/".$livraison->id, "label" => "Intervenants", "style" => "info", "icon" => "<i class='fa fa-user-friends'></i>");
+		$actions[] = array("url" => "/livraisons/vehicules/".$livraison->id, "label" => "Véhicules", "style" => "info", "icon" => "<i class='fa fa-truck'></i>");
+		
+		$popups = array();
+		
+		$navs = array();
+		
+        return view('livraisons/affichage/intervenants', compact('page_title', 
+		'page_description', 
+		'user', 
+		'actions', 
+		'popups',
+		'navs',
+		'titulaire',
+		'livraison',
+		'transporteurs',
+		'equipe',
+		'remplacants'));
+    }
+	
+	
+	// AFFICHAGE DES DOCUMENTS DE LIVRAISON DU DOSSIER
+	// livraisons/intervenants
+    public function vehicules($id)
+    {
+		$user = \Auth::user();
+		
+		$societeID = $user->societeID;
+		
+		$livraison = Livraison::find($id);
+		$page_title = 'Livraison '.$livraison->numero .' [Véhicules]';
+		$page_description = $livraison->numero;
+		
+		if($livraison->do == $user->societeID)
+		{
+			$titulaire = Societe::find($livraison->societe);
+			$remplacants = array();
+
+			$vehicules = Livreur::where('livraison', $id)->where('categorie', 'vehicule')->get();
+		}
+		else
+		{
+			$titulaire = Societe::find($user->societeID);
+			$remplacants = DB::table('entites')
+				->where('societe', $user->societeID)
+				->where('categorie', 'vehicule')
+				->whereNotIn('id', function($query) use ($chantierID)
+				    {
+				        $query->select(DB::raw('intervenant'))
+				              ->from('equipiers')
+				              ->whereRaw('equipiers.chantier = '.$chantierID);
+				    })
+	            ->get('entites.*');
+
+			$vehicules = Equipier::where('chantier', $chantierID)->where('societe', $user->societeID)->where('categorie', 'vehicule')->get();
+		}
+		
+		// BOUTONS D'ACTIONS
+		$actions = array();
+		$actions[] = array("url" => "/livraisons/show/".$livraison->id, "label" => "Informations", "style" => "info", "icon" => "<i class='fa fa-info'></i>");
+		$actions[] = array("url" => "/livraisons/documents/".$livraison->id, "label" => "Documents", "style" => "info", "icon" => "<i class='fa fa-folder-open'></i>");
+		$actions[] = array("url" => "/livraisons/intervenants/".$livraison->id, "label" => "Intervenants", "style" => "info", "icon" => "<i class='fa fa-user-friends'></i>");
+		$actions[] = array("url" => "/livraisons/vehicules/".$livraison->id, "label" => "Véhicules", "style" => "info", "icon" => "<i class='fa fa-truck'></i>");
+		
+		$popups = array();
+		
+		$navs = array();
+		
+        return view('livraisons/affichage/vehicules', compact('page_title', 
+		'page_description', 
+		'user', 
+		'actions', 
+		'popups',
+		'navs',
+		'titulaire',
+		'livraison',
+		'remplacants',
+		'vehicules'));
     }
 	
 	public function choixpresta($id)
@@ -300,23 +482,6 @@ class LivraisonsController extends Controller
 		
 		return view('livraisons/liste-titu', ['user' => $user, 'livraison' => $myLivraison, 'prestataires' => $prestataires, 'transporteurs' => $transporteurs, 'open' => 'livraison']);
 	}
-    public function documents($id)
-    {
-		$user = \Auth::user();
-		$societe = Societe::find($user->societeID);
-		$societeID = $user->societeID;
-		
-		$categorie = "livreur";
-		
-		$myLivraison = Livraison::find($id);
-		$livraison = $myLivraison->id;
-		$transporteurs = Transporteur::where('livraison', $myLivraison->id)->get();
-		
-        return view('livraisons/documents', ['user' => $user, 
-		'livraison' => $myLivraison, 
-		'open' => 'livraison',
-		'transporteurs' => $transporteurs]);
-    }
 	
 	public function ajouterdocument(Request $request)
 	{
@@ -348,83 +513,6 @@ class LivraisonsController extends Controller
 		return $this->documents($request->input("livraison"));
 	}
 	
-    public function intervenants($id)
-    {
-		$user = \Auth::user();
-		$societe = Societe::find($user->societeID);
-		$societeID = $user->societeID;
-		
-		$categorie = "livreur";
-		
-		$myItem = Livraison::find($id);
-		$livraison = $myItem->id;
-		
-		if($myItem->do == $user->societeID)
-		{
-			$titulaire = Societe::find($myItem->societe);
-			$equipe = Livreur::where('livraison', $id)->whereIn('categorie', ['livreur'])->get();
-			$remplacants = array();
-		}
-		else
-		{
-			$titulaire = Societe::find($user->societeID);
-			$remplacants = DB::table('entites')
-				->where('societe', $user->societeID)
-				->whereIn('categorie', ['intervenant', 'interim', 'etranger'])
-				->whereNotIn('id', function($query) use ($livraison)
-				    {
-				        $query->select(DB::raw('intervenant'))
-				              ->from('livreurs')
-				              ->whereRaw('livreurs.livraison = '.$livraison);
-				    })
-	            ->get('entites.*');
-
-			$equipe = Livreur::where('livraison', $id)->where('societe', $user->societeID)->whereIn('categorie', ['livreur'])->get();
-		}
-		
-        return view('livraisons/intervenants', ['user' => $user, 
-		'equipe' => $equipe, 
-		'remplacants' => $remplacants, 
-		'titulaire' => $titulaire, 
-		'livraison' => $myItem, 
-		'open' => 'livraison', 
-		'categorie' => $categorie]);
-    }
-	
-    public function vehicules($id)
-    {
-		$user = \Auth::user();
-		
-		$societeID = $user->societeID;
-		
-		$myItem = Livraison::find($id);
-		
-		if($myItem->do == $user->societeID)
-		{
-			$titulaire = Societe::find($myItem->societe);
-			$remplacants = array();
-
-			$vehicules = Livreur::where('livraison', $id)->where('categorie', 'vehicule')->get();
-		}
-		else
-		{
-			$titulaire = Societe::find($user->societeID);
-			$remplacants = DB::table('entites')
-				->where('societe', $user->societeID)
-				->where('categorie', 'vehicule')
-				->whereNotIn('id', function($query) use ($chantierID)
-				    {
-				        $query->select(DB::raw('intervenant'))
-				              ->from('equipiers')
-				              ->whereRaw('equipiers.chantier = '.$chantierID);
-				    })
-	            ->get('entites.*');
-
-			$vehicules = Equipier::where('chantier', $chantierID)->where('societe', $user->societeID)->where('categorie', 'vehicule')->get();
-		}
-		
-        return view('livraisons/vehicules', ['user' => $user, 'vehicules' => $vehicules, 'remplacants' => $remplacants, 'titulaire' => $titulaire, 'livraison' => $myItem, 'open' => 'chantier']);
-    }
 	
 	public function liste_titulaires(Request $request)
     {

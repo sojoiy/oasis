@@ -169,7 +169,6 @@ Route::post('/chantier/getlignevisiteur', 'ChantiersController@getlignevisiteur'
 Route::post('/chantier/getlignedate', 'ChantiersController@getlignedate')->name('chantier-getlignedate');
 
 Route::match(['get', 'post'], '/chantier/pieces', 'ChantiersController@pieces')->name('chantier-pieces');
-Route::get('/chantier/piecesrefusees', 'ChantiersController@piecesrefusees')->name('chantier-piecesrefusees');
 Route::get('/chantier/piece/{id}', 'ChantiersController@piece')->name('chantier-piece');
 Route::get('/chantier/received', 'ChantiersController@received')->name('chantier-lister');
 Route::get('/chantier/create', 'ChantiersController@create')->name('chantier-creer');
@@ -207,7 +206,9 @@ Route::post('/chantier/saveattributs', 'ChantiersController@saveattributs')->nam
 Route::post('/chantier/refreshresponsables', 'ChantiersController@refreshresponsables')->name('chantier-saveattributs');
 Route::get('/autorisation/chantiers', 'SocietesController@chantiers')->name('autorisation-chantiers');
 
-	
+Route::get('/annuaire/show/{id}', 'AnnuaireController@show')->name('annuaire-show');
+Route::match(['get', 'post'], '/annuaire/lister', 'AnnuaireController@lister')->name('annuaire-lister');
+
 Route::post('/chantier/savememo', 'ChantiersController@savememo')->name('chantier-savememo');
 Route::get('/chantier/mandater/{id}', 'ChantiersController@mandater')->name('chantier-mandater');
 Route::get('/chantier/validation/{id}', 'ChantiersController@validation')->name('chantier-validation');
@@ -293,6 +294,8 @@ Route::get('/chantier/rdv', 'ChantiersController@rdv')->name('chantier-rdv');
 Route::get('/chantier/attribuer/{id}', 'ChantiersController@attribuer')->name('chantier-attribuer');
 Route::post('/chantier/attribuer', 'ChantiersController@attribuerpost')->name('chantier-attribuer');
 Route::post('/chantier/setcreneau', 'ChantiersController@setcreneau')->name('chantier-setcreneau');
+Route::post('/chantier/rafraichircalendar', 'ChantiersController@rafraichircalendar')->name('chantier-rafraichircalendar');
+Route::post('/chantier/annulerrdv', 'ChantiersController@annulerrdv')->name('chantier-annulerrdv');
 Route::post('/chantier/proroger', 'ChantiersController@proroger')->name('chantier-proroger');
 Route::post('/chantier/cloturer', 'ChantiersController@cloturer')->name('chantier-cloturer');
 Route::post('/chantier/upload', 'ChantiersController@upload')->name('chantier-upload');
@@ -334,6 +337,7 @@ Route::post('/vehicule/save', 'EntitesController@savevehicule')->name('save-vehi
 Route::get('/vehicule/show/{id}', 'EntitesController@vehiculeshow')->name('fiche-vehicule');
 Route::post('/vehicule/change', 'EntitesController@vehiculechange')->name('change-vehicule');
 Route::post('/vehicule/addpiece', 'EntitesController@addpiece')->name('piece-intervenant');
+Route::post('/vehicule/rechercher', 'EntitesController@rechercherVehicule')->name('vehicule-rechercher');
 
 Route::get('/entite/autres', 'EntitesController@autres')->name('entite-autres');
 Route::get('/entite/createtype', 'EntitesController@createtype')->name('entite-createtype');

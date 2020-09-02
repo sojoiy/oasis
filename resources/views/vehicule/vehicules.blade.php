@@ -72,7 +72,7 @@
 					<th>Modèle</th>
 					<th></th>
 				</tr>
-				
+				<!--table de vehicule avec ses attributs !-->
 				@foreach ($elements as $element)
 					<tr id="ligne_entite_{{ $element->id }}">
 						<td style="width:10px;">{{ $element->id }}</td>
