@@ -10,15 +10,20 @@
 		            </a>
 				@endforeach
 			@endif
-
+            @if(isset($search))
+            <form action="{{$search['url']}}" method="post">
+            {{ csrf_field() }}
             <div class="input-group input-group-sm input-group-solid" style="max-width: 175px">
-                <input type="text" class="form-control pl-4" placeholder="Search..."/>
+            	
+                <input type="text" class="form-control pl-4" placeholder="Rechercher..."value="{{$keywords}}"  name="keywords"/>
                 <div class="input-group-append">
                     <span class="input-group-text">
                         {{ Metronic::getSVG("media/svg/icons/General/Search.svg", "svg-icon-md") }}
                     </span>
                 </div>
             </div>
+            </form>
+            @endif
         </div>
         <div class="d-flex align-items-center">
             @if (config('layout.subheader.displayDaterangepicker'))
@@ -38,13 +43,14 @@
 				@endforeach
 			@endif
 			
-			@if(isset($navs))
-				@foreach($navs as $nav)
+			
+            @if(isset($navs))
+            @foreach($navs as $nav)
 		            <a href="{{ $nav['url'] }}" class="btn btn-light btn-hover-primary btn-sm btn-icon mr-2">
 		                @php echo($nav['icon']); @endphp
 		            </a>
 				@endforeach
-			@endif
+			@endif 
 
            <!-- 
 			<div class="dropdown dropdown-inline" data-toggle="tooltip" title="Quick actions" data-placement="left">
@@ -89,6 +95,7 @@
                     </ul>
                 </div>
             </div> -->
+			
         </div>
     </div>
 </div>

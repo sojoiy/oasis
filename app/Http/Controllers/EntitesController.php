@@ -68,10 +68,8 @@ class EntitesController extends Controller
 		
 	// AFFICHE LA LISTE DES INTERVENANTS D'UN PRESTATAIRE
 	// intervenants
-    public function intervenants()
+    public function intervenants(Request $request)
     {
-		$user = \Auth::user();
-		
 		$user = \Auth::user();
 		
 		$societe = Societe::find($user->societeID);
@@ -83,15 +81,33 @@ class EntitesController extends Controller
 		$num_page = (isset($request->num_page)) ? $request->input("num_page") : 1;
 		$sort = (isset($request->sort)) ? $request->input("sort") : "name";
 		$sens = (isset($request->sens)) ? $request->input("sens") : "asc";
+		
 		$refresh = "/intervenants";
 		
 		if(isset($request->keywords) && $request->keywords != "")
 		{
-			$keywords = $request->keywords;
+			$keywords=$request->keywords;
+		
+			$keywordsCode = array();
+			$codes=DB::table('pays')->select("code")->where('nationalite','like','%'.$keywords.'%')->get();
+			foreach($codes as $code){
 			
-			$elements = Entite::where('categorie', 'intervenant')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
-			$nb_items = Entite::where('categorie', 'intervenant')->where('statut', 'actif')->where('societe', $user->societeID)->where('name', 'like', '%'.$request->keywords.'%')->count();
+				$keywordsCode[]=$code->code;
+			}
+			
+			$elements = Entite::where('categorie', 'intervenant')->where('statut', 'actif')->where('societe', $user->societeID)
+			->where('name', 'like', '%'.$keywords.'%')
+			->orWhere('fonction', 'like', '%'.$keywords.'%')
+			->orWhereIn('nationalite',$keywordsCode)
+			->orderBy($sort, $sens)->offset(($num_page-1)*20)->limit(20)->get();
+			$nb_items = Entite::where('categorie', 'intervenant')->where('statut', 'actif')->where('societe', $user->societeID)
+			->where('name', 'like', '%'.$keywords.'%')
+			->orWhere('fonction', 'like', '%'.$keywords.'%')
+			->orWhereIn('nationalite',$keywordsCode)
+			->count();
 			$nb_pages = max(1, intval($nb_items/20));
+
+
 		}
 		else
 		{
@@ -110,6 +126,10 @@ class EntitesController extends Controller
 		// BOUTONS DE NAVIGATION
 		$navs = array();
 		
+		// BARRE DE RECHERCHE
+		$search = array();
+		$search["url"] = "/intervenants";
+
         return view('presta/liste/intervenants', compact('page_title', 
 		'page_description', 
 		'refresh', 
@@ -124,7 +144,8 @@ class EntitesController extends Controller
 		'nb_items', 
 		'actions', 
 		'popups', 
-		'navs'));
+		'navs',
+		'search'));
     }
 	
     

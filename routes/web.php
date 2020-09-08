@@ -310,7 +310,7 @@ Route::post('/intervenant/refreshlistepieces', 'EntitesController@refreshlistepi
 /*** LES PIECES ***/
 Route::post('/pieces/validerpiece', 'PiecesController@validerpiece')->name('pieces-validerpiece');
 	
-Route::get('/intervenants', 'EntitesController@intervenants')->name('intervenants');
+Route::match(['get','post'],'/intervenants', 'EntitesController@intervenants')->name('intervenants');
 Route::get('/add-intervenant', 'EntitesController@nouveau')->name('add-intervenant');
 Route::post('/intervenant/getinfo', 'EntitesController@getinfo')->name('getinfo-intervenant');
 Route::post('/intervenant/save', 'EntitesController@save_new')->name('save-intervenant');

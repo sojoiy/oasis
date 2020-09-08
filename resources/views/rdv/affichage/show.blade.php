@@ -96,7 +96,7 @@
 						<div class="form-group row">
 							<label class="col-lg-2 col-form-label">Date RDV *</label>
 							<div class="col-lg-2">
-								<input class="form-control" required {{ $disabled }} name="date_rdv[]" type="datetime-local" value="{{ $creneau }}" required value="" id="example-datetime-local-input" >
+								<input class="form-control" required {{ $disabled }} name="date_rdv[]" type="text" value="{{ $creneau }}" required value="" id="example-datetime-local-input" >
 							</div>
 							@if(!$rdv->validation)
 							<div class="col-lg-3">
@@ -160,7 +160,7 @@
 					@endif
 				</div>
 			</div>
-			@if(!$rdv->validation)
+			@if(($user->id==$rdv->valideur && !$rdv->validation) || ($user->id == $rdv->valideur2 && !$rdv->validation2))
 					<div class="kt-form__actions">
 						<div class="row">
 							<div class="col-lg-2"></div>
@@ -170,10 +170,10 @@
 							<div class="col-lg-1"></div>
 							
 							<div class="col-lg-2">
-								@if($user->id == $rdv->valideur || $user->checkRights("valider_rdv"))
+								
 									<button type="button" onclick="accepterRdv({{ $rdv->id }});" class="btn btn-success"><i class="fa fa-check"></i>Valider</button>
 									<button type="button" onclick="refuserRdv({{ $rdv->id }});" class="btn btn-danger"><i class="fa fa-minus-circle"></i> Refuser</button>
-								@endif
+								
 							</div>
 						</div>
 					</div>

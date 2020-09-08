@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Mail\NewValidationRdv;
+use Illuminate\Support\Facades\Mail;
 
 class Rendezvous extends Model
 {
@@ -83,4 +85,22 @@ class Rendezvous extends Model
 		else
 			return "";
 	}
+	public function demandeValidationRdv($isniv2=false)
+	{		
+		
+		$valid = (!$isniv2) ? User::find($this->valideur) : User::find($this->valideur2);
+	try{
+		$res = Mail::to($valid->email)->send(new NewValidationRdv($this));
+	}
+
+	catch (\Exception $e) {
+			
+	return true;
+	}
+
+		return true;
+	}
+
+
 }
+ 

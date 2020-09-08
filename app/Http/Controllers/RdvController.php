@@ -272,12 +272,25 @@ class RdvController extends Controller
 	public function validerrdv(Request $request)
     {
 		$user = \Auth::user();
-
 		$myItem = Rendezvous::find($request->id);
-		$myItem->validation = $user->id;
-		$myItem->date_validation = date("Y-m-d H:i");
-		$myItem->save();
-		return "OK";
+		if($myItem->valideur2 != NULL && $myItem->valideur2 == $user->id){
+			$myItem->validation = $user->id;
+			$myItem->date_validation = date("Y-m-d H:i");
+			$myItem->save();
+			return "OK";
+		}
+		else if($myItem->valideur2 != Null && $myItem->valideur == $user->id){
+			$myItem->demandeValidationRdv(true);
+		}
+		else if($myItem->valideur2 == Null && $myItem->valideur == $user->id){
+			$myItem->validation = $user->id;
+			$myItem->date_validation = date("Y-m-d H:i");
+			$myItem->save();
+			return "OK";
+		}
+		
+		
+		
     }
 	
 	public function refuserrdv(Request $request)
@@ -325,7 +338,7 @@ class RdvController extends Controller
 		
         return view('chantiers/rdv', ['user' => $user, 'societe' => $myItem, 'rdvs' => $rdvs, 'message' => $message]);
     }
-	
+
     public function creerrdv(Request $request)
     {
 		$user = \Auth::user();
@@ -333,9 +346,12 @@ class RdvController extends Controller
        	$myItem = new Rendezvous();
         $myItem->nom_visiteur  = $request->nom_visiteur[0];
         $myItem->prenom_visiteur = $request->prenom_visiteur[0];
-        $myItem->societe_visiteur = $request->societe_visiteur[0];
-        $myItem->date_rdv = date("Y-m-d H:i", strtotime($request->date_rdv[0]));
-        $myItem->creneaux = json_encode($request->date_rdv);
+		$myItem->societe_visiteur = $request->societe_visiteur[0];
+		
+		
+		$myItem->date_rdv = $this->changedatefrus($request->date_rdv[0]);
+        $date=array($this->changedatefrus($request->date_rdv[0]));
+        $myItem->creneaux = json_encode($date);
         
 		$accompagnement = array();
 		$i = 0;
@@ -367,7 +383,10 @@ class RdvController extends Controller
 		
         $myItem->service = $request->input("service");
         $myItem->commentaire = $request->input("commentaire");
-        $myItem->save();
+		$myItem->save();
+		
+		$myItem->demandeValidationRdv();
+		
 		
 		return $this->lister($request);
     }
@@ -380,8 +399,10 @@ class RdvController extends Controller
         $myItem->nom_visiteur  = $request->nom_visiteur[0];
         $myItem->prenom_visiteur = $request->prenom_visiteur[0];
         $myItem->societe_visiteur = $request->societe_visiteur[0];
-        $myItem->date_rdv = $request->date_rdv[0];
-        $myItem->creneaux = json_encode($request->date_rdv);
+	
+		$myItem->date_rdv = $this->changedatefrus($request->date_rdv[0]);
+        $date=array($this->changedatefrus($request->date_rdv[0]));
+        $myItem->creneaux = json_encode($date);
         
 		$accompagnement = array();
 		$i = 0;
@@ -416,6 +437,13 @@ class RdvController extends Controller
 		
 		return $this->lister($request);
     }
-	
+	public function changedatefrus($date_rdv)
+	{
+		$dateetheure= explode(" ",$date_rdv);
+		$dates=explode("/",$dateetheure[0]);
+
+	$dateus=$dates[2]."-".$dates[1]."-".$dates[0]." ".$dateetheure[1];
+	return $dateus;
+	}
     
 }
